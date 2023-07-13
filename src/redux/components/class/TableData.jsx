@@ -49,7 +49,9 @@ const Close = styled.span`
 
 const TableData = () => {
   const [selectedCell, setSelectedCell] = useState(null);
-  const { isLoading, isError, data } = useQuery("classes", getClasses);
+  const { isLoading, isError, data } = useQuery("classes", getClasses, {
+    initialData: { classes: [] },
+  });
   const tableData = generateTableData(13, 6);
 
   const navigate = useNavigate();
@@ -63,9 +65,9 @@ const TableData = () => {
   };
 
   const applyDataToCell = (cell) => {
-    const matchingData = data?.class.find((item) => item.id === cell.id);
-    if (matchingData && matchingData.student) {
-      return matchingData.student;
+    const matchingData = data?.classes?.find((item) => item.id === cell.id);
+    if (matchingData && matchingData.classroom === selectedCell.classroom) {
+      return matchingData.studentName;
     } else {
       return "➕";
     }

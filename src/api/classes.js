@@ -4,11 +4,12 @@ import api from "../axios/api";
 
 const getClasses = async () => {
   const response = await api.get(`/classes`);
+  console.log(response.data);
   return response.data;
 };
 
 const addClass = async (newClass) => {
-  await api.post(`/classes`.newClass);
+  await api.post(`/classes`, newClass);
 };
 
 const deleteClass = async (id) => {
