@@ -1,9 +1,10 @@
 {
-  "todos": [
+  "class": [
     {
       "id": 1,
-      "title": "json-server",
-      "content": "json-server를 배워봅시다."
+      "student": "1",
+      "classroom": "1",
+      "isClassDone": "false"
     }
   ]
 }
