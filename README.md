@@ -11,3 +11,4 @@ yarn add json-server
 yarn json-server --watch db.json --port 4001
 yarn add axios
 yarn add react-query
+yarn add react-uuid
