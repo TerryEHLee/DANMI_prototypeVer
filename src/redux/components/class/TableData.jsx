@@ -50,7 +50,7 @@ const Close = styled.span`
 const TableData = () => {
   const [selectedCell, setSelectedCell] = useState(null);
   const { isLoading, isError, data } = useQuery("classes", getClasses);
-  const tableData = generateTableData(13, 6, data);
+  const tableData = generateTableData(13, 6);
 
   const navigate = useNavigate();
 
@@ -62,6 +62,15 @@ const TableData = () => {
     setSelectedCell(null);
   };
 
+  const applyDataToCell = (cell) => {
+    const matchingData = data?.class.find((item) => item.id === cell.id);
+    if (matchingData && matchingData.student) {
+      return matchingData.student;
+    } else {
+      return "➕";
+    }
+  };
+
   return (
     <>
       <h1>단미필라테스 수업 시간표</h1>
@@ -70,11 +79,37 @@ const TableData = () => {
           <tbody>
             {tableData?.map((row, rowIndex) => (
               <tr key={rowIndex}>
-                {row.map((cell, cellIndex) => (
-                  <td key={cellIndex} onClick={() => handleCellClick(cell)}>
-                    <CellBox>{cell}</CellBox>
-                  </td>
-                ))}
+                {row.map((cell, cellIndex) => {
+                  if (rowIndex === 0 && cellIndex === 0) {
+                    // Top-left cell with "time"
+                    return (
+                      <td key={cellIndex}>
+                        <CellBox>{cell}</CellBox>
+                      </td>
+                    );
+                  } else if (rowIndex === 0) {
+                    // Top row with daysOfWeek
+                    return (
+                      <td key={cellIndex}>
+                        <CellBox>{cell}</CellBox>
+                      </td>
+                    );
+                  } else if (cellIndex === 0) {
+                    // Leftmost column with timeValues
+                    return (
+                      <td key={cellIndex}>
+                        <CellBox>{cell}</CellBox>
+                      </td>
+                    );
+                  } else {
+                    // Other cells
+                    return (
+                      <td key={cellIndex} onClick={() => handleCellClick(cell)}>
+                        <CellBox>{applyDataToCell(cell)}</CellBox>
+                      </td>
+                    );
+                  }
+                })}
               </tr>
             ))}
           </tbody>
@@ -92,7 +127,7 @@ const TableData = () => {
   );
 };
 
-export function generateTableData(rows, columns, data) {
+export function generateTableData(rows, columns) {
   const tableData = [];
 
   const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -101,15 +136,11 @@ export function generateTableData(rows, columns, data) {
     return `${hour}:00`;
   });
 
-  tableData.push(["time", ...daysOfWeek]); // Add a row with daysOfWeek
+  const headerRow = ["🧸", ...daysOfWeek];
+  tableData.push(headerRow); // Add a row with daysOfWeek
 
   for (let i = 0; i < rows; i++) {
-    const row = [timeValues[i]];
-    for (let j = 0; j < columns - 1; j++) {
-      const cellData = data?.[i]?.[j];
-      const cell = cellData || "➕";
-      row.push(cell);
-    }
+    const row = [timeValues[i], ...daysOfWeek.map(() => "Empty")];
     tableData.push(row);
   }
 
